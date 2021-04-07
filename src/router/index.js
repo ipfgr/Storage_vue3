@@ -10,6 +10,14 @@ const routes = [
       requiresAuth: true
     }
   },
+    {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import(/* webpackChunkName: "dashboard" */ '../views/Dashboard.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
   {
     path: '/login',
     name: 'Login',
@@ -50,7 +58,7 @@ const router = createRouter({
   routes
 })
 
-// //Check for user autentification
+//Check for user auth
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth)
 

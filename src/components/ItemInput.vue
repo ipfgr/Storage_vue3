@@ -119,15 +119,10 @@ export default {
         min-width: 500px;
     }
 
-    .message {
 
-    }
-
-    .remove {
-        padding-top: 25px
-    }
-
-    .input{
-
+    @media (max-width: 600px){
+        .input-field {
+            min-width: 350px !important;
+        }
     }
 </style>

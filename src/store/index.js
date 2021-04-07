@@ -7,6 +7,7 @@ export default createStore({
     state: {
         //Array with all products existing at storage
         products: [],
+        eventsArr: [{}],
         currentUserEmail: "",
         filter: 0,
         //Categories list
@@ -105,6 +106,20 @@ export default createStore({
             router.push('/login')
         },
 
+        //Save event do database log
+        writeLog({ctx}, payload){
+            console.log(ctx)
+            firebase.logCollection
+                .doc(payload.id)
+                .set({
+                    id: payload.id,
+                    event: payload.event,
+                    date:Date().substr(4,20)
+                })
+                .then(() => console.log("Success"))
+                .catch((error) => console.log(error))
+
+        },
          //Add item to storage
         async addItemToStorage({state}, payload) {
             state.products = []
@@ -154,9 +169,6 @@ export default createStore({
             //Remove message after 2 second
             setTimeout(() => state.saveResultMessage = "", 2000)
         },
-
-
-
     },
     modules: {},
     getters: {
@@ -177,6 +189,9 @@ export default createStore({
         },
         LoggedWithEmail(state){
             return state.currentUserEmail
+        },
+        GetAllEvents(state){
+            return state.eventsArr
         }
 
     },

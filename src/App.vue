@@ -26,9 +26,18 @@ export default {
 
 <style>
 @import "~materialize-css/dist/css/materialize.css";
+*{
+ margin:0;
+ padding:0;
+ box-sizing:border-box;
+}
+body{
+ background-color: ghostwhite;
+}
 .main-page-title{
     text-align: center;
 }
+
 
   @keyframes fadein{
   0% {opacity: 0}

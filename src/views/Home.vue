@@ -70,9 +70,9 @@ export default {
 </script>
 
 <style scoped>
-.main-page-title{
-    text-align: center;
-}
+    .main-page-title{
+        text-align: center;
+    }
     .product{
         animation:fadein 1s ease-in-out;
     }

@@ -9,11 +9,15 @@
                         <li>
                             <router-link to="/">Home</router-link>
                         </li>
+
                         <li>
-                            <router-link to="/add">Add warehouse receipt</router-link>
+                            <router-link to="/dashboard">Dashboard</router-link>
                         </li>
                         <li>
-                            <router-link to="/add-item">Add new item</router-link>
+                            <router-link to="/add">Add income</router-link>
+                        </li>
+                        <li>
+                            <router-link to="/add-item">Add item</router-link>
                         </li>
                         <li>Logged as: {{ loggedAs }}</li>
                         <li>
@@ -30,10 +34,13 @@
                     <router-link to="/">Home</router-link>
                 </li>
                 <li>
-                    <router-link to="/add">Add warehouse receipt</router-link>
+                    <router-link to="/dashboard">Dashboard</router-link>
                 </li>
                 <li>
-                    <router-link to="/add-item">Add new item</router-link>
+                    <router-link to="/add">Add income</router-link>
+                </li>
+                <li>
+                    <router-link to="/add-item">Add item</router-link>
                 </li>
                 <li>Logged as: {{ loggedAs }}</li>
                 <li>

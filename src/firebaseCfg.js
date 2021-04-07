@@ -31,6 +31,7 @@ db.settings(settings)
 const productsCollection = db.collection("products")
 const itemNamesCollection = db.collection("item-names")
 const usersCollection = db.collection('users')
+const logCollection = db.collection('logs')
 
 export {
     db,
@@ -38,4 +39,5 @@ export {
     productsCollection,
     itemNamesCollection,
     usersCollection,
+    logCollection,
 }

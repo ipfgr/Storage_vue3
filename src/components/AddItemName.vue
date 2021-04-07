@@ -44,7 +44,7 @@
         methods: {
             //Add new item to items list
             addNewItem() {
-                let uniqueId = (Math.random() * 1000).toFixed(0)
+                let uniqueId = (Math.random() * 10000).toFixed(0)
                 if (this.category == "") this.category = "Other"
                 if (this.itemName) {
                     this.$store.commit('addItemNameToList', {
@@ -55,6 +55,7 @@
                     console.log("We are update", this.itemName, this.category)
                     this.itemName = ""
                     this.message = "Item added successful"
+                    this.$store.dispatch("writeLog", {id: uniqueId, event: "Add new item name"})
                     setTimeout(() => this.message = "", 2000)
                 } else alert("Add correct item name")
             },
@@ -70,7 +71,8 @@
 <style scoped>
     .add-item {
         justify-content: center;
-        display: inline-flex;
+        display: flex;
+        flex-wrap: wrap;
     }
 
     .centered {
@@ -78,4 +80,7 @@
         justify-content: center;
     }
 
+    .buttons{
+        padding-top: 15px;
+    }
 </style>
