@@ -1,8 +1,8 @@
+<!--Register new user form component-->
 <template>
     <div>
         <div class="welcome center-align">
             <h4>Not yet have account?</h4>
-
         </div>
         <div class="form-body">
             <form>
@@ -21,7 +21,8 @@
                 </div>
                 <div>
                     <div class="input-field col s4">
-                        <input class="validate" id="repeat-password" type="password" v-model.trim="RegisterForm.repeatPassword">
+                        <input class="validate" id="repeat-password" type="password"
+                               v-model.trim="RegisterForm.repeatPassword">
                         <label for="repeat-password">Repeat Password</label>
                     </div>
                 </div>
@@ -52,19 +53,17 @@
                 const email = this.RegisterForm.email
                 const password = this.RegisterForm.password
                 const repPassword = this.RegisterForm.repeatPassword
-                if(password !== repPassword){
+                if (password !== repPassword) {
                     alert("passwords password and repeat password dosn't match")
                 }
-                if(!email || !password){
+                if (!email || !password) {
                     alert("Please enter correct information to register")
-                }
-                else {
+                } else {
                     this.$store.dispatch('Register', {
-                    email: email,
-                    password: password
-                })
+                        email: email,
+                        password: password
+                    })
                 }
-
             }
         },
 
@@ -72,17 +71,18 @@
 </script>
 
 <style scoped>
-     .form-body{
+    .form-body {
         text-align: center;
         display: flex;
         justify-content: center;
         margin: 5px;
     }
-    .input-field{
+
+    .input-field {
         min-width: 400px !important;
     }
 
-    div .btn{
+    div .btn {
         margin: 15px;
     }
 </style>

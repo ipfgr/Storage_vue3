@@ -4,33 +4,36 @@
           <h3>{{ header }}</h3>
       </div>
       <Filter/>
-      <ul v-if="filteredProducts.length">
+      <Loader v-if="state == 1"/>
+      <ul v-if="filteredProducts.length && state==3">
           <li class="product" v-for="product in filteredProducts" :key="product.data.idx">
               <ItemCard :product="product" />
           </li>
       </ul>
-      <div v-else class="message"><h4>Dont have products in list</h4></div>
+      <div v-if="!filteredProducts.length && state==3" class="message"><h4>Dont have products in list</h4></div>
   </div>
 </template>
 
 <script>
 import ItemCard from "@/components/ItemCard.vue";
 import Filter from "@/components/Filter.vue"
+import Loader from "@/components/Loader.vue"
+import ENUM from "@/enums"
 const firebase = require("../firebaseCfg")
-
-
 
 export default {
   name: 'App',
   components: {
       ItemCard,
-      Filter
+      Filter,
+      Loader,
   },
     data() {
         return {
             header: "Storage items list",
             products: [],
-            filtered:[]
+            filtered:[],
+            state: ENUM.LOADING
     }
   },
     created() {
@@ -41,12 +44,11 @@ export default {
                 querySnapshot.forEach((doc) => {
                     this.products.push(doc.data())
                 });
+                //Set state to LOADED for remove loader and show content
+                this.state = ENUM.LOADED
             });
-
     },
-    methods:{
-
-    },
+    methods:{},
     computed:{
         productsList(){
             return this.products
@@ -74,6 +76,6 @@ export default {
         text-align: center;
     }
     .product{
-        animation:fadein 1s ease-in-out;
+        animation:fadein 0.5s ease-in-out;
     }
 </style>

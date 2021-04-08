@@ -1,3 +1,4 @@
+<!--Component for show navigation menu-->
 <template>
     <header>
         <nav class="nav-extended">
@@ -27,6 +28,7 @@
                 </ul>
             </div>
         </nav>
+        <!--        Side menu for mobile devices      -->
         <ul class="sidenav" id="mobile" ref="sidenav">
             <li><a class="brand-logo" href="#">MyStorage</a></li>
             <section v-show="loggedAs">
@@ -47,8 +49,9 @@
                     <router-link @click="logout" to="#">Logout</router-link>
                 </li>
             </section>
-
         </ul>
+        <!--        Side menu for mobile devices      -->
+
     </header>
 </template>
 

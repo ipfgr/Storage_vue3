@@ -38,7 +38,7 @@
         methods: {
             onTake() {
                 if (this.product.quantity < this.$refs.takequantity.value) {
-                    alert("Cant take quantity more then exist at storage")
+                    alert(`Cant take quantity more then exist at storage ${this.product.quantity} ${this.$refs.takequantity.value}`)
                     return 0
                 }
                 if (this.$refs.takequantity.value < 0) {

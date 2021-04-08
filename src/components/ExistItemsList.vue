@@ -58,7 +58,6 @@
                         console.error("Error removing document: ", error);
                     });
                 }
-
             },
         },
         computed: {
@@ -81,9 +80,13 @@
         margin: 5px;
         display: flex;
         justify-content: space-between;
-        border: 1px solid greenyellow;
+        border: 1px solid #26a69a;
+        transition: all 0.3s;
     }
-        .remove{
+    .existing-item:hover{
+        transform: scale(0.99);
+    }
+    .remove{
             min-width: fit-content;
-        }
+    }
 </style>

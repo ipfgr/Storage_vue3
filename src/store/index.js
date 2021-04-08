@@ -1,5 +1,7 @@
 import {createStore} from 'vuex'
 import router from "../router/index"
+import ENUM from "../enums"
+
 
 const firebase = require('../firebaseCfg.js');
 
@@ -7,6 +9,7 @@ export default createStore({
     state: {
         //Array with all products existing at storage
         products: [],
+        apiState: ENUM.INIT,
         eventsArr: [{}],
         currentUserEmail: "",
         filter: 0,
@@ -121,7 +124,7 @@ export default createStore({
 
         },
          //Add item to storage
-        async addItemToStorage({state}, payload) {
+        async addItemToStorage({state,dispatch}, payload) {
             state.products = []
             //Check for each product in payload is it already exist in storage database
             payload.forEach((product) => {
@@ -144,10 +147,12 @@ export default createStore({
                                     quantity: newQuantity,
                                 })
                                 .then(() => {
-                                    state.saveResultMessage = ("Document overwrite successfully!");
+                                    dispatch("writeLog", {id: product.data.idx, event: `Product '${product.data.name}' add quantity successfully! '${product.data.name}'`})
+                                    state.saveResultMessage = ("Product add quantity successfully!");
                                 })
                                 .catch((error) => {
-                                    state.saveResultMessage = (`Error overwriting document: ${error}`);
+                                    dispatch("writeLog", {id: product.data.idx, event: `Error overwriting document: '${product.data.name}'`})
+                                    state.saveResultMessage = (`Error overwriting document: '${error}'`);
                                 });
                         }
                         //If not exist we write as new document
@@ -156,14 +161,16 @@ export default createStore({
                                 .doc(product.data.idx)
                                 .set(product)
                                 .then(() => {
-                                    state.saveResultMessage = ("Document successfully written!");
+                                    dispatch("writeLog", {id: product.data.idx, event: `Add new product '${product.data.name}' to storage`})
+                                    state.saveResultMessage = ("Add new product to storage successfully!");
                                 })
                                 .catch((error) => {
-                                    state.saveResultMessage = (`Error writing document: ${error}`);
+                                    dispatch("writeLog", {id: product.data.idx, event: `Error writing document:  '${product.data.name}'`})
+                                    state.saveResultMessage = (`Error writing document: '${error}'`);
                                 });
                         }
                     }).catch((error) => {
-                    state.saveResultMessage = (`Error getting document: ${error}`);
+                    state.saveResultMessage = (`Error getting document: '${error}'`);
                 });
             })
             //Remove message after 2 second

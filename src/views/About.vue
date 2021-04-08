@@ -18,7 +18,6 @@
     .container {
         justify-content: center;
         align-items: center;
-        border: 1px solid #cdd820;
         padding: 10px;
         margin-top: 10px;
         margin-bottom: 10px;

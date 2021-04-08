@@ -55,7 +55,9 @@
                     console.log("We are update", this.itemName, this.category)
                     this.itemName = ""
                     this.message = "Item added successful"
-                    this.$store.dispatch("writeLog", {id: uniqueId, event: "Add new item name"})
+                    //Write this event to eventsLog
+                    this.$store.dispatch("writeLog", {id: uniqueId, event: `Add new item name ${this.itemName}`})
+
                     setTimeout(() => this.message = "", 2000)
                 } else alert("Add correct item name")
             },
