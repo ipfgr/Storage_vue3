@@ -1,13 +1,11 @@
 <template>
-    <div :class="{finished: isFinished}" class="card-container">
+    <div :class="{finished: isFinished, finishsoon:ifFinishSoon}" class="card-container">
         <div class="item-description">
             <div><strong>Name: </strong> {{ product.data.name}}</div>
             <div><strong>Storage Quantity: </strong> {{ product.quantity}}</div>
             <div><strong>Category: </strong> {{ product.data.category}}</div>
-
         </div>
-
-        <div  v-if="pageNow === 'Home'" class="take-items" v-show="!parseInt(product.quantity) <= 0">
+        <div class="take-items" v-if="pageNow === 'Home'" v-show="!parseInt(product.quantity) <= 0">
             <div class="input-field col s3 left-align">
                 <input data-length="4" placeholder="Take items" ref="takequantity" type="number">
             </div>
@@ -15,17 +13,23 @@
                 <button @click=onTake class="btn">Take from storage</button>
             </div>
         </div>
-
+        <div class="take-items" v-show="parseInt(product.quantity) === 0">
+            <div class="buttons">
+                <button class="modal-trigger btn orange darken-1" data-target="modal1">Add Items Income</button>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+    const firebase = require("../firebaseCfg")
     export default {
         name: "ItemCard",
         data() {
             return {
                 pageNow: this.$route.name,
-                isFinished: parseInt(this.product.quantity) <= 0
+                isFinished: parseInt(this.product.quantity) <= 0,
+                ifFinishSoon: parseInt(this.product.quantity) > 1 && parseInt(this.product.quantity) <= 10
             }
         },
         props: {
@@ -54,13 +58,20 @@
                         quantity: parseInt(this.product.quantity) - parseInt(this.$refs.takequantity.value)
                     }
                     this.$refs.takequantity.value = ""
-                    this.$store.commit("takeItemsFromStorage", payload)
+                    //Minus items quantity from selected products
+                    firebase.productsCollection
+                        .doc(payload.data.idx)
+                        .set(payload)
+                        .then(() => {
+
+                            console.log("Item successfully taken from storage!");
+                        })
+                        .catch((error) => {
+                            console.log("Error take item from storage: ", error);
+                        });
                 }
                 //
             },
-            onAdd() {
-
-            }
         }
     }
 </script>
@@ -79,7 +90,8 @@
         padding: 0px 10px 0px 10px;
         transition: all 0.3s;
     }
-    .card-container:hover{
+
+    .card-container:hover {
         transform: scale(0.99);
     }
 
@@ -101,6 +113,12 @@
         border: 1px solid red;
     }
 
+    .finishsoon {
+        background-color: #def5f7;
+        color: #000000;
+        border: 1px solid #000000;
+    }
+
     .buttons {
         margin: 5px 0px;
         display: flex;
@@ -114,5 +132,18 @@
         justify-content: flex-end;
         align-items: center;
 
+    }
+
+    @media(max-width: 700px){
+        .card-container {
+            flex-direction: column;
+        }
+        .take-items{
+            display:flex;
+            flex-direction: column;
+        }
+        .item-description{
+            padding-top: 15px;
+        }
     }
 </style>

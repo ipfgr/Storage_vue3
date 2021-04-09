@@ -1,16 +1,17 @@
 <template>
     <div class="input">
         <form class="col s12 ">
-
             <div :key="index" class="item centered" v-for="(line,index) in lines">
                 <div class="row add-todo">
                     <div class="input-field col">
+                        <div class="wrapper">
                         <select class="input-container" ref="select" v-model="line.data">
                             <option disabled selected v-if="!AllItems.length" value="">Not have any items in database
                             </option>
                             <option disabled selected v-else value="">Choose your option</option>
                             <option :key="item.idx" :value="{idx:item.idx, name:item.name, category:item.category}" v-for="item in AllItems" >{{ item.name }}</option>
                         </select>
+                            </div>
                     </div>
                     <div class="input-field col">
                         <input class="input-container validate" id="stock" required type="number"
@@ -22,13 +23,13 @@
         </form>
         <!--        Buttons        -->
         <div class="buttons center-align">
-            <a @click="addLine" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">add</i></a>
-            <a @click="removeLine(index)" class="btn-floating btn-medium waves-effect waves-light red"><i
+            <a @click.prevent="addLine" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">add</i></a>
+            <a @click.prevent="removeLine(index)" class="btn-floating btn-medium waves-effect waves-light red"><i
                     class="material-icons">remove</i></a>
         </div>
         <div class="buttons center-align">
             <button @click.prevent="addItemsToStorage" class="btn">Save to Storage</button>
-            <div class="message"><h3>{{ message }}</h3></div>
+            <div class="message"><h5>{{ message }}</h5></div>
 
         </div>
         <!--        Buttons       -->
@@ -49,7 +50,7 @@ export default {
         methods: {
             async addLine() {
                 await this.lines.push({})
-                window.M.AutoInit()
+                window.M.FormSelect.init(this.$refs.select,{})
             },
             removeLine(index) {
                 this.lines.splice(index, 1)
@@ -84,7 +85,7 @@ export default {
             allItems().then(() => this.$store.commit("AddItemNames", AllItemNamesList))
         },
         mounted() {
-            window.M.AutoInit()
+                window.M.FormSelect.init(this.$refs.select,{})
         },
 
         computed: {
@@ -119,7 +120,9 @@ export default {
         min-width: 500px;
     }
 
-
+    .message{
+        padding: 15px;
+    }
     @media (max-width: 600px){
         .input-field {
             min-width: 350px !important;

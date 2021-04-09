@@ -18,8 +18,6 @@
 import ItemCard from "@/components/ItemCard.vue";
 import Filter from "@/components/Filter.vue"
 import Loader from "@/components/Loader.vue"
-import ENUM from "@/enums"
-const firebase = require("../firebaseCfg")
 
 export default {
   name: 'App',
@@ -31,27 +29,24 @@ export default {
     data() {
         return {
             header: "Storage items list",
-            products: [],
             filtered:[],
-            state: ENUM.LOADING
     }
   },
-    created() {
-        //Real time listener of all products in storage to show on page
-        firebase.productsCollection
-            .onSnapshot((querySnapshot) => {
-                this.products = []
-                querySnapshot.forEach((doc) => {
-                    this.products.push(doc.data())
-                });
-                //Set state to LOADED for remove loader and show content
-                this.state = ENUM.LOADED
-            });
-    },
+
     methods:{},
+
+
+        mounted() {
+            //Get all events from DB
+            this.$store.dispatch("getAndSetAllItems")
+        },
+
     computed:{
+        state(){
+                return this.$store.getters.GetApiState
+            },
         productsList(){
-            return this.products
+            return this.$store.getters.GetAllItems
         },
         //Filter for products
         filteredProducts(){

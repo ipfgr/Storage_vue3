@@ -7,18 +7,31 @@ const firebase = require('../firebaseCfg.js');
 
 export default createStore({
     state: {
-        //Array with all products existing at storage
-        products: [],
+        allItems: [], //Array of all items in our database
+        finishedItems:[], // Filtered array for items that's quantity is 0
+        finishSoonItems:[], //Filtered array for items that's quantity if less then 10 and more then 1
         apiState: ENUM.INIT,
-        eventsArr: [{}],
+        events: [],
         currentUserEmail: "",
         filter: 0,
         //Categories list
-        categories: ["kitchen", "bar", "consumables", "cleaning", "other"],
+        categories: ["kitchen", "bar", "consumables", "cleaning", "other"], //All existing categories array
         AllItemNamesList: [],
         saveResultMessage: ""
     },
     mutations: {
+        SetFinishedItems: (state, arr) => {
+            state.finishedItems = []
+            state.finishedItems = arr
+        },
+        SetFinishSoonItems: (state, arr) => {
+            state.finishSoonItems = []
+            state.finishSoonItems = arr
+        },
+        SetAllItems: (state, arr) => {
+            state.allItems = []
+            state.allItems = arr
+        },
         saveResultMessage: (state, message) => {
             state.saveResultMessage = message
         },
@@ -36,18 +49,7 @@ export default createStore({
             state.filter = event.target.value
         },
 
-        //Minus items quantity from selected products
-        takeItemsFromStorage(state, payload) {
-            firebase.productsCollection
-                .doc(payload.data.idx)
-                .set(payload)
-                .then(() => {
-                    console.log("Item successfully taken from storage!");
-                })
-                .catch((error) => {
-                    console.log("Error take item from storage: ", error);
-                });
-        },
+
 
         //Add All items names to state
         AddItemNames: (state, data) => {
@@ -67,6 +69,10 @@ export default createStore({
                     console.error("Error adding document: ", error);
                 });
         },
+        SetChartData(state, arr){
+            state.chartData = []
+            state.chartData = arr
+        },
 
         setUserProfile(state, val) {
             state.userProfile = val
@@ -79,9 +85,8 @@ export default createStore({
                 .then(userCredential => {
                     commit("setLoggedAsEmail", userCredential.user.email)
                 })
-            // fetch user profile and set in state
-            router.push('/')
-
+                .then(()=> router.push('/'))
+                .catch(() => alert("Wrong Username or Password, please try again"))
           },
         //register new user
         async Register({commit}, form){
@@ -109,6 +114,54 @@ export default createStore({
             router.push('/login')
         },
 
+        getAllEvents({state}){
+            state.events = []
+            firebase.logCollection.orderBy("timeStamp")
+                .onSnapshot((querySnapshot) => {
+                querySnapshot.forEach(event => {
+                    state.events.push(event.data())
+                })
+                    state.events.reverse()
+            })
+        },
+
+        //Get all items from firebase
+        getAndSetAllItems({state, dispatch}){
+            state.apiState = ENUM.LOADING
+                firebase.productsCollection
+                .onSnapshot((querySnapshot) => {
+                                const allItems = []
+                    querySnapshot.forEach((doc) => {
+                        allItems.push(doc.data())
+                    });
+                //Commit to store all items array
+                    dispatch("setAllItems", allItems)
+                });
+        },
+         //Save all items and filter it
+        setAllItems({commit,state}, arr){
+            console.log(arr)
+            const finishSoon = []
+            const finished = []
+            //Get all items that's finish soon and write to array
+            arr.forEach(item => {
+                    if (parseInt(item.quantity) < 10 && parseInt(item.quantity) >= 1) {
+                        finishSoon.push(item)
+                    }
+                })
+            //Get all already finished items and write to array
+            arr.forEach(item => {
+                    if (parseInt(item.quantity) === 0) {
+                        finished.push(item)
+                    }
+                })
+            //Save
+            setTimeout(() => state.apiState = ENUM.LOADED,1000)  //Set state to LOADED for remove loader and show content
+            commit("SetAllItems", arr)
+            commit("SetFinishSoonItems", finishSoon)
+            commit("SetFinishedItems", finished)
+        },
+
         //Save event do database log
         writeLog({ctx}, payload){
             console.log(ctx)
@@ -117,15 +170,16 @@ export default createStore({
                 .set({
                     id: payload.id,
                     event: payload.event,
-                    date:Date().substr(4,20)
+                    date:Date().substr(4,20),
+                    timeStamp: Date.now()
                 })
                 .then(() => console.log("Success"))
                 .catch((error) => console.log(error))
 
         },
-         //Add item to storage
+
+         //Add item to firebase storage
         async addItemToStorage({state,dispatch}, payload) {
-            state.products = []
             //Check for each product in payload is it already exist in storage database
             payload.forEach((product) => {
                 firebase.productsCollection
@@ -147,7 +201,7 @@ export default createStore({
                                     quantity: newQuantity,
                                 })
                                 .then(() => {
-                                    dispatch("writeLog", {id: product.data.idx, event: `Product '${product.data.name}' add quantity successfully! '${product.data.name}'`})
+                                    dispatch("writeLog", {id: product.data.idx, event: `Product '${product.data.name}' add quantity successfully! `})
                                     state.saveResultMessage = ("Product add quantity successfully!");
                                 })
                                 .catch((error) => {
@@ -179,6 +233,20 @@ export default createStore({
     },
     modules: {},
     getters: {
+        GetAllItems(state){
+            return state.allItems
+        },
+        GetFinishSoonItems(state){
+            return state.finishSoonItems
+        },
+        //Get all finished items (items with 0 quantity)
+        GetFinishedItems(state){
+            return state.finishedItems
+        },
+        //Get data for Doughnut chart
+        GetChartData(state){
+            return [state.finishedItems.length, state.allItems.length ]
+        },
         //Get all products from array
         GetFilterState(state) {
             return state.filter
@@ -198,7 +266,11 @@ export default createStore({
             return state.currentUserEmail
         },
         GetAllEvents(state){
-            return state.eventsArr
+            return state.events
+        },
+
+        GetApiState(state){
+            return state.apiState
         }
 
     },

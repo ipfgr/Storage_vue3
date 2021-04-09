@@ -14,9 +14,6 @@
         components: {
             Vue3ChartJs
         },
-        props:{
-            dataScope: Array,
-        },
 
         data() {
             return {
@@ -31,13 +28,14 @@
                                     '#E46651',
                                     '#41B883',
                                 ],
-                                data: this.dataScope
+                                data: this.$store.getters.GetChartData
                             }
                         ]
                     }
                 }
             }
         },
+
     }
 
 </script>

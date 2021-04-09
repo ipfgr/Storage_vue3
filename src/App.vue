@@ -4,16 +4,19 @@
 
   <router-view/>
 
+<ModalAddItem/>
 <Footer />
 </template>
 
 <script>
 import Navbar from "@/components/Navbar.vue"
 import Footer from "@/components/Footer.vue"
+import ModalAddItem from "@/components/ModalAddItem";
 
 export default {
   name: 'App',
   components: {
+   ModalAddItem,
    Navbar,
    Footer,
   },
