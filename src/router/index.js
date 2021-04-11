@@ -61,8 +61,7 @@ const router = createRouter({
 //Check for user auth
 router.beforeEach((to, from, next) => {
   const authNeed = to.matched.some(x => x.meta.requiresAuth)
-
-  if (authNeed && !auth.currentUser) {
+  if (authNeed && !auth.currentUser ) {
     next('/login')
   } else {
     next()
